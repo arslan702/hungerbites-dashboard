@@ -1,0 +1,23 @@
+version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /home/ubuntu/admin
+permissions:
+  - object: /home/ubuntu/admin
+    pattern: "**"
+    owner: ubuntu
+    group: ubuntu
+hooks:
+  BeforeInstall:
+    - location: src/BeforeInstall.sh
+      runas: ubuntu
+      timeout: 200
+  ApplicationStart:
+    - location: src/applicationstart.sh
+      runas: ubuntu
+      timeout: 200
+      image: my-image:latest
+      script:
+        - export CONFIG=$(cat config.json | jq -r '.')
+        - echo "Deploying with config: $CONFIG"
